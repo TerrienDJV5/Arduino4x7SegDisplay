@@ -9,8 +9,6 @@
 #define ShiftSegDisplay_h
 
 #include "Arduino.h"
-#include <stdio.h>
-#include <stdlib.h>
 
 //add Display Modes
 //  displayMode(0) = Normal
@@ -71,8 +69,8 @@ class ShiftSegDisplay
     byte latchPin;//Pin connected to ST_CP of 74HC595
     byte clockPin;//Pin connected to SH_CP of 74HC595
     byte dataPin;//Pin connected to DS of 74HC595
-    static const byte charInputLength = 10;
-    static const byte extraData4Input = 2;
+    static const byte charInputLength = 11;
+    const byte extraData4Input = 2;
     
     const byte segscreenBIN[18] = {
       //abcdefg-
@@ -189,27 +187,12 @@ class ShiftSegDisplay
     //add Used For The 3 Unused 74hc595 Pins
     void showNormalV2(float numberIN , int delayrepeat=0){
       char modeSet[2] = ":'";
-      String stringOne = String(numberIN);
-      char charString[charInputLength];
-      char charStringNew[charInputLength];
-      stringOne.toCharArray(charString, charInputLength);
-      Serial.println(charString);
-      
-      
-      /*
-      
-      float floatNum = 1234.5678;
-      char cstr[16];
-      itoa(floatNum, cstr, 10);
-      //-> "1234.5678"
-      Serial.println(cstr);
-      */
       byte cstrLength = (charInputLength-extraData4Input);
       char cstr[cstrLength];
       char cstrNew[cstrLength];//cstrLength
-      dtostrf(double(numberIN), cstrLength ,3 ,cstr);
+      double doubleNumber = double(numberIN);
+      dtostrf(doubleNumber, cstrLength ,3 ,cstr);
       byte i2 = 0;
-      char dataChars[2] = " .";
       for (byte i=0; i<=cstrLength; i++){
         if (cstr[i]==' '){
           continue;
@@ -226,18 +209,19 @@ class ShiftSegDisplay
           break;
         };
       };
-      char charInput[10] = "-.8.5.1:'";//SDSDSDSD {L1L2} L3
+      char charInput[10];// = "-.8.5.1:'";//SDSDSDSD {L1L2} L3
       for (byte i=0; i<=sizeof(cstrNew); i++){
         charInput[i] = cstrNew[i];
       };
       for (byte i=0; i<=sizeof(modeSet); i++){
-        charInput[i+sizeof(cstrNew)] = modeSet[i];
+        charInput[i+sizeof(cstrNew)-1] = modeSet[i];
       };
+      Serial.println(charInput);
       showFromChar(charInput , delayrepeat);
     };
     
     void showFromChar(char charInput[charInputLength] , int delayrepeat=0){
-      //charInput = "-.8.5.1:'";//SDSDSDSD {L1L2} L3
+      //charInput = "-.8.5.1.:'";//SDSDSDSD {L1L2} L3
       // { |.|*|:}
       char modeL1L2[4] = " .*:";
       // { |'}
@@ -246,7 +230,7 @@ class ShiftSegDisplay
       char modeSeg[18] = "0123456789AbCdEF -";
       // { |.}
       char modeDec[2] = " .";
-      boolean set_DP = (charInput[1]|charInput[3]|charInput[5]|charInput[7]);//TrueHIGH , FalseLOW
+      boolean set_DP = (charInput[1]==modeDec[1]|charInput[3]==modeDec[1] | charInput[5]==modeDec[1] | charInput[7]==modeDec[1]);//TrueHIGH , FalseLOW
       boolean set_L1 = (charInput[7]==modeL1L2[1])|(charInput[7]==modeL1L2[3]);//TrueHIGH , FalseLOW
       boolean set_L2 = (charInput[7]==modeL1L2[2])|(charInput[7]==modeL1L2[3]);//TrueHIGH , FalseLOW
       boolean set_L3 = (charInput[8]==modeL3[1]);//TrueHIGH , FalseLOW  //Used for temperature
@@ -256,7 +240,7 @@ class ShiftSegDisplay
       bitWrite(set_DP_POS, 1 , (charInput[5]==modeDec[1]));
       bitWrite(set_DP_POS, 0 , (charInput[7]==modeDec[1]));
       byte numb[4] = {0, 0, 0, 0};
-      for (unsigned int i=0; i<=sizeof(modeSeg); i++){
+      for (unsigned int i=0; i<=sizeof(modeSeg)-1; i++){
         if (charInput[0]==modeSeg[i]){
           numb[0] = i;
         };
