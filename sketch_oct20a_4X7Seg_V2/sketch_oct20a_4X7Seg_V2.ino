@@ -6,7 +6,7 @@
 ShiftSegDisplay displaySeg(A1,A2,A0);
 
 
-float count = 0;
+float count = -5;
 
 
 

@@ -9,6 +9,8 @@
 #define ShiftSegDisplay_h
 
 #include "Arduino.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 //add Display Modes
 //  displayMode(0) = Normal
@@ -69,6 +71,9 @@ class ShiftSegDisplay
     byte latchPin;//Pin connected to ST_CP of 74HC595
     byte clockPin;//Pin connected to SH_CP of 74HC595
     byte dataPin;//Pin connected to DS of 74HC595
+    static const byte charInputLength = 10;
+    static const byte extraData4Input = 2;
+    
     const byte segscreenBIN[18] = {
       //abcdefg-
       0b11111100,//0
@@ -183,22 +188,55 @@ class ShiftSegDisplay
     //  displayMode(4) = Normal HEX
     //add Used For The 3 Unused 74hc595 Pins
     void showNormalV2(float numberIN , int delayrepeat=0){
+      char modeSet[2] = ":'";
       String stringOne = String(numberIN);
-      String stringTwo;
-      char charString = stringOne.toCharArray(buf, len)
+      char charString[charInputLength];
+      char charStringNew[charInputLength];
+      stringOne.toCharArray(charString, charInputLength);
       Serial.println(charString);
-      for (unsigned int i=0; i<=sizeof(stringOne); i++){
-        
-        if (stringOne[i]==(".")){
+      
+      
+      /*
+      
+      float floatNum = 1234.5678;
+      char cstr[16];
+      itoa(floatNum, cstr, 10);
+      //-> "1234.5678"
+      Serial.println(cstr);
+      */
+      byte cstrLength = (charInputLength-extraData4Input);
+      char cstr[cstrLength];
+      char cstrNew[cstrLength];//cstrLength
+      dtostrf(double(numberIN), cstrLength ,3 ,cstr);
+      byte i2 = 0;
+      char dataChars[2] = " .";
+      for (byte i=0; i<=cstrLength; i++){
+        if (cstr[i]==' '){
           continue;
         };
-        stringOne[i]=(".");
-      }
-      Serial.println(stringOne); 
+        if (cstr[i]=='.'){
+          cstrNew[i2-1] = cstr[i];
+        };
+        if (cstr[i]!='.'){
+          cstrNew[i2] = cstr[i];
+          cstrNew[i2+1] = ' ';
+          i2=i2+2;
+        };
+        if (not(i2<=cstrLength-1)){
+          break;
+        };
+      };
       char charInput[10] = "-.8.5.1:'";//SDSDSDSD {L1L2} L3
+      for (byte i=0; i<=sizeof(cstrNew); i++){
+        charInput[i] = cstrNew[i];
+      };
+      for (byte i=0; i<=sizeof(modeSet); i++){
+        charInput[i+sizeof(cstrNew)] = modeSet[i];
+      };
       showFromChar(charInput , delayrepeat);
     };
-    void showFromChar(char charInput[10] , int delayrepeat=0){
+    
+    void showFromChar(char charInput[charInputLength] , int delayrepeat=0){
       //charInput = "-.8.5.1:'";//SDSDSDSD {L1L2} L3
       // { |.|*|:}
       char modeL1L2[4] = " .*:";
