@@ -42,27 +42,12 @@ void setup() {
 
 
 void loop() {
-  //displaySeg.displayShow(count, 1, 100);
-  //displaySeg.displayShow(count, 2, 100);
-  //displaySeg.displayShow(count, 3, 100);
-  //displaySeg.displayShow(count, 4, 100);
-  
-  //Serial.println(count);
-  //displaySeg.showNormal(count);
-  //displaySeg.showFloat(count);
-  
-  
-  //displaySeg.showAsTime(count, count);
-  //displaySeg.displayShow(count, 0);
-  
-  
-  
-  
   value = analogRead(A3);
-  
   //displaySeg.showNormal(value);
   //displaySeg.showFromChar("-.-.-.-:'");
-  displaySeg.showSimpleValue(count);
+  //displaySeg.showSimpleValue(count);
+  displaySeg.showSimpleValue(value);
+  
   
   //Serial.println(value);
   //displaySeg.displayShow(value, 0, 1);

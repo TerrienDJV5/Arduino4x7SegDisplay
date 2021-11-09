@@ -191,7 +191,16 @@ class ShiftSegDisplay
       char cstr[cstrLength];
       char cstrNew[cstrLength];
       double doubleNumber = double(numberIN);
-      dtostrf(doubleNumber, cstrLength ,3 ,cstr);
+
+      //i need to add leading spaces for INT Mode
+      //for cleaner look
+      if (int(numberIN)==numberIN){
+        itoa(numberIN, cstr, cstrLength);
+      }
+      else{
+        dtostrf(doubleNumber, cstrLength ,3 ,cstr);
+      };
+      
       byte i2 = 0;
       for (byte i=0; i<=cstrLength; i++){
         if (cstr[i]==' '){
@@ -209,6 +218,8 @@ class ShiftSegDisplay
           break;
         };
       };
+      Serial.println(cstr);
+      Serial.println(cstrNew);
       char charInput[charInputLength] = "          ";// = "-.8.5.1.:'";//SDSDSDSD {L1L2} L3
       for (byte i=0; i<=sizeof(cstrNew)-1; i++){
         charInput[i] = cstrNew[i];
@@ -216,7 +227,7 @@ class ShiftSegDisplay
       for (byte i=0; i<=sizeof(modeSet)-1; i++){
         charInput[i+sizeof(cstrNew)-1] = modeSet[i];
       };
-      //Serial.println(charInput);
+      Serial.println(charInput);
       showFromChar(charInput , delayrepeat);
     };
     
