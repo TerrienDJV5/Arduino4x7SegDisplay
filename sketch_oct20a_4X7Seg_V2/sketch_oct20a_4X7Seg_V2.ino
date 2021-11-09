@@ -62,7 +62,7 @@ void loop() {
   
   //displaySeg.showNormal(value);
   //displaySeg.showFromChar("-.-.-.-:'");
-  displaySeg.showNormalV2(count);
+  displaySeg.showSimpleValue(count);
   
   //Serial.println(value);
   //displaySeg.displayShow(value, 0, 1);

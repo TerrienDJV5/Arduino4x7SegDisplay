@@ -185,11 +185,11 @@ class ShiftSegDisplay
     //  displayMode(3) = temperature F
     //  displayMode(4) = Normal HEX
     //add Used For The 3 Unused 74hc595 Pins
-    void showNormalV2(float numberIN , int delayrepeat=0){
+    void showSimpleValue(float numberIN , int delayrepeat=0){
       char modeSet[2] = ":'";
       byte cstrLength = (charInputLength-extraData4Input);
       char cstr[cstrLength];
-      char cstrNew[cstrLength];//cstrLength
+      char cstrNew[cstrLength];
       double doubleNumber = double(numberIN);
       dtostrf(doubleNumber, cstrLength ,3 ,cstr);
       byte i2 = 0;
@@ -199,8 +199,8 @@ class ShiftSegDisplay
         };
         if (cstr[i]=='.'){
           cstrNew[i2-1] = cstr[i];
-        };
-        if (cstr[i]!='.'){
+        }
+        else {
           cstrNew[i2] = cstr[i];
           cstrNew[i2+1] = ' ';
           i2=i2+2;
@@ -209,14 +209,14 @@ class ShiftSegDisplay
           break;
         };
       };
-      char charInput[10];// = "-.8.5.1:'";//SDSDSDSD {L1L2} L3
-      for (byte i=0; i<=sizeof(cstrNew); i++){
+      char charInput[charInputLength] = "          ";// = "-.8.5.1.:'";//SDSDSDSD {L1L2} L3
+      for (byte i=0; i<=sizeof(cstrNew)-1; i++){
         charInput[i] = cstrNew[i];
       };
-      for (byte i=0; i<=sizeof(modeSet); i++){
+      for (byte i=0; i<=sizeof(modeSet)-1; i++){
         charInput[i+sizeof(cstrNew)-1] = modeSet[i];
       };
-      Serial.println(charInput);
+      //Serial.println(charInput);
       showFromChar(charInput , delayrepeat);
     };
     
