@@ -93,7 +93,7 @@ class ShiftSegDisplay
       0b00000000,//None
       0b00000010,//-
     };
-    char segscreenchar[16] = "0123456789AbCdEF ";
+    char segscreenchar[18] = "0123456789AbCdEF ";
     byte shiftByte0;
     byte shiftByte1;
     byte extraOutPutPins;
@@ -105,7 +105,7 @@ class ShiftSegDisplay
       //no longer needs to listen for information
       digitalWrite(latchPin, HIGH);
     };
-    void showDPDisplay(byte set_DP_POS){
+    void showDPDisplay(byte set_DP_POS){//Is Now Unused!
       shiftByte0 = 0b00000000;// //Used 0bCCACACAC
       shiftByte1 = 0b00000000;// //Used 0bAAAAANNN
       bitWrite(shiftByte1, 7-(2), LOW);//A L1
@@ -141,24 +141,17 @@ class ShiftSegDisplay
       delay(1);
     };
     byte int2array(int numbin, byte (& myarray)[4]) {
-      //Serial.println(numbin);
       byte num3 = numbin % 10;
       byte num2 = ((numbin - num3) / 10) % 10;
       byte num1 = ((numbin - num3 - num2) / 100) % 10;
       byte num0 = ((numbin - num3 - num2 - num1) / 1000) % 10;
-      //Serial.print(num0);
-      //Serial.print(num1);
-      //Serial.print(num2);
-      //Serial.println(num3);
-      
       myarray[0] = num0;
       myarray[1] = num1;
       myarray[2] = num2;
       myarray[3] = num3;
     };
   public:
-    void dot();
-    void dash();
+    void showSimpleValue();
     ShiftSegDisplay(byte latchPin, byte clockPin, byte dataPin) {
       // Use 'this->' to make the difference between the
       // 'pin' attribute of the class and the 
@@ -167,26 +160,26 @@ class ShiftSegDisplay
       this->clockPin = clockPin;
       this->dataPin = dataPin;
       init();
-    }
+    };
     void init() {
       pinMode(latchPin, OUTPUT);
       pinMode(clockPin, OUTPUT);
       pinMode(dataPin, OUTPUT);
       // Always try to avoid duplicate code.
-    }
-
-    void clearZeros(byte (& numb)[4], byte (& numbINT)[4]){
-      
     };
+    
+    
+    
+    
     //add Display Modes
-    //  displayMode(0) = Normal
-    //  displayMode(1) = Time
-    //  displayMode(2) = temperature C
-    //  displayMode(3) = temperature F
-    //  displayMode(4) = Normal HEX
+    //Normal
+    //Time
+    //temperature C
+    //temperature F
+    //Normal HEX
     //add Used For The 3 Unused 74hc595 Pins
     void showSimpleValue(float numberIN , int delayrepeat=0){
-      char modeSet[2] = ":'";
+      char modeSet[3] = ":'";
       byte cstrLength = (charInputLength-extraData4Input);
       char cstr[cstrLength];
       char cstrNew[cstrLength];
@@ -234,13 +227,13 @@ class ShiftSegDisplay
     void showFromChar(char charInput[charInputLength] , int delayrepeat=0){
       //charInput = "-.8.5.1.:'";//SDSDSDSD {L1L2} L3
       // { |.|*|:}
-      char modeL1L2[4] = " .*:";
+      char modeL1L2[5] = " .*:";
       // { |'}
-      char modeL3[2] = " '";
+      char modeL3[3] = " '";
       // {0|1|2|3|4|5|6|7|8|9|A|b|C|d|E|F| |-}
-      char modeSeg[18] = "0123456789AbCdEF -";
+      char modeSeg[19] = "0123456789AbCdEF -";
       // { |.}
-      char modeDec[2] = " .";
+      char modeDec[3] = " .";
       boolean set_DP = (charInput[1]==modeDec[1]|charInput[3]==modeDec[1] | charInput[5]==modeDec[1] | charInput[7]==modeDec[1]);//TrueHIGH , FalseLOW
       boolean set_L1 = (charInput[7]==modeL1L2[1])|(charInput[7]==modeL1L2[3]);//TrueHIGH , FalseLOW
       boolean set_L2 = (charInput[7]==modeL1L2[2])|(charInput[7]==modeL1L2[3]);//TrueHIGH , FalseLOW
@@ -272,7 +265,9 @@ class ShiftSegDisplay
         masterSetDisplay(numb, set_DP, set_DP_POS, set_L1, set_L2, set_L3, set_extraPins);
       };
     };
-    void showNormal(float numberIN, int delayrepeat=0){
+    
+    
+    void showNormal(float numberIN, int delayrepeat=0){//Will Not Be Used!(bad method)
       boolean set_DP = LOW;//TrueHIGH , FalseLOW
       boolean set_L1 = LOW;//TrueHIGH , FalseLOW
       boolean set_L2 = LOW;//TrueHIGH , FalseLOW
@@ -328,7 +323,8 @@ class ShiftSegDisplay
         masterSetDisplay(numb, set_DP, set_DP_POS, set_L1, set_L2, set_L3, set_extraPins);
       };
     };
-    void showFloat(float numberIN, int delayrepeat=0){//not working
+    void showFloat(float numberIN, int delayrepeat=0){//Will Not Be Used!(bad method)
+      //not working
       boolean set_DP = HIGH;//TrueHIGH , FalseLOW
       boolean set_L1 = LOW;//TrueHIGH , FalseLOW
       boolean set_L2 = LOW;//TrueHIGH , FalseLOW
@@ -383,7 +379,8 @@ class ShiftSegDisplay
         masterSetDisplay(numb, set_DP, set_DP_POS, set_L1, set_L2, set_L3, set_extraPins);
       };
     };
-    void showAsTime(float numberIN_0, float numberIN_1, int delayrepeat=0){//not working
+    void showAsTime(float numberIN_0, float numberIN_1, int delayrepeat=0){//Will Not Be Used!(bad method)
+      //not working
       boolean set_DP = HIGH;//TrueHIGH , FalseLOW
       boolean set_L1 = HIGH;//TrueHIGH , FalseLOW
       boolean set_L2 = HIGH;//TrueHIGH , FalseLOW
@@ -468,14 +465,6 @@ class ShiftSegDisplay
       if (decPVal_0==0 and decPVal_1==0){set_DP = LOW;};
       
       
-      
-      
-      
-      //finish here
-      
-      
-      
-      
       //Normal
       set_L1 = HIGH;//TrueHIGH , FalseLOW
       set_L2 = HIGH;//TrueHIGH , FalseLOW
@@ -488,7 +477,7 @@ class ShiftSegDisplay
     };
     
     
-    void displayShow(float numberIN, byte displayMode, int delayrepeat=0){
+    void displayShow(float numberIN, byte displayMode, int delayrepeat=0){//Will Not Be Used!(bad method)
       boolean set_DP = HIGH;//TrueHIGH , FalseLOW
       boolean set_L1 = LOW;//TrueHIGH , FalseLOW
       boolean set_L2 = HIGH;//TrueHIGH , FalseLOW
@@ -524,10 +513,6 @@ class ShiftSegDisplay
       set_DP_POS = 0b0000;
       bitWrite(set_DP_POS, (cit-1), HIGH);
       
-      
-      
-      
-      
       boolean clearMyZero = false;
       int cZ_INT = 0;
       int cZ_DEC = 0;
@@ -555,14 +540,6 @@ class ShiftSegDisplay
         numb[occ] = numbDEC[occ];
       };
       
-      
-      
-      
-      
-      
-      
-      
-      
       for (int occ = (4-cit); occ <= 3; occ++) {
         numb[occ] = numbDEC[occ-(5-cit)];
       };
@@ -571,14 +548,9 @@ class ShiftSegDisplay
         //Serial.println(occ+4-cit);
       };
       
-      
-      
       if (decPVal==0){
         set_DP = LOW;
       };
-      
-      
-      
       
       if (displayMode == 1){
         //Time
@@ -650,9 +622,6 @@ class ShiftSegDisplay
       byte* numb = inputDigits;
       //DP
       byte statDP[4] = {!bitRead(set_DP_POS, 3-(0)), !bitRead(set_DP_POS, 3-(1)), !bitRead(set_DP_POS, 3-(2)), !bitRead(set_DP_POS, 3-(3))};
-      //if (set_DP==HIGH){
-      //  showDPDisplay(set_DP_POS);
-      //};
       if (set_L1|set_L2|set_L3){
         showL1L2L3Display(set_L1, set_L2, set_L3);
       };
