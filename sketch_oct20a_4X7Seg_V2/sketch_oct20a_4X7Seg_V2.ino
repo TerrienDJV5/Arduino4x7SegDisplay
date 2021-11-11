@@ -45,8 +45,8 @@ void loop() {
   value = analogRead(A3);
   //displaySeg.showNormal(value);
   //displaySeg.showFromChar("-.-.-.-:'");
-  //displaySeg.showSimpleValue(count);
-  displaySeg.showSimpleValue(value);
+  displaySeg.showSimpleValue(count);
+  //displaySeg.showSimpleValue(value);
   
   
   //Serial.println(value);

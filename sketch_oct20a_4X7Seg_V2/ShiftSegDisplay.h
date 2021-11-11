@@ -638,7 +638,7 @@ class ShiftSegDisplay
       boolean set_L1 = set_L1_;
       boolean set_L2 = set_L2_;
       boolean set_L3 = set_L3_;//Used for temperature
-      
+      if (set_DP==false){set_DP_POS = 0b0000;};
       if (set_DP_POS==0b0000){set_DP = false;};
       
       byte setByteNumber;
@@ -649,9 +649,10 @@ class ShiftSegDisplay
       
       byte* numb = inputDigits;
       //DP
-      if (set_DP==HIGH){
-        showDPDisplay(set_DP_POS);
-      };
+      byte statDP[4] = {!bitRead(set_DP_POS, 3-(0)), !bitRead(set_DP_POS, 3-(1)), !bitRead(set_DP_POS, 3-(2)), !bitRead(set_DP_POS, 3-(3))};
+      //if (set_DP==HIGH){
+      //  showDPDisplay(set_DP_POS);
+      //};
       if (set_L1|set_L2|set_L3){
         showL1L2L3Display(set_L1, set_L2, set_L3);
       };
@@ -670,15 +671,15 @@ class ShiftSegDisplay
         bitWrite(shiftByte0, 7-(4), bitRead(setByteNumber,7-(4)));//E
         bitWrite(shiftByte1, 7-(0), bitRead(setByteNumber,7-(5)));//F
         bitWrite(shiftByte1, 7-(3), bitRead(setByteNumber,7-(6)));//G
-        bitWrite(shiftByte0, 7-(6), LOW);//DP
+        bitWrite(shiftByte0, 7-(6), (!statDP[i] and set_DP));//DP
         
         delaymul = 0;
         bitWrite(cSelect, 7-(2), HIGH);
-        if (numb[0] == numb[i]) {bitWrite(cSelect, 7-(0), LOW);delaymul += 1;} else {bitWrite(cSelect, 7-(0), HIGH);};
-        if (numb[1] == numb[i]) {bitWrite(cSelect, 7-(1), LOW);delaymul += 1;} else {bitWrite(cSelect, 7-(1), HIGH);};
+        if ((numb[0] == numb[i]) and (statDP[0] == statDP[i])) {bitWrite(cSelect, 7-(0), LOW);delaymul += 1;} else {bitWrite(cSelect, 7-(0), HIGH);};
+        if ((numb[1] == numb[i]) and (statDP[1] == statDP[i])) {bitWrite(cSelect, 7-(1), LOW);delaymul += 1;} else {bitWrite(cSelect, 7-(1), HIGH);};
         bitWrite(cSelect, 7-(2), HIGH);
-        if (numb[2] == numb[i]) {bitWrite(cSelect, 7-(3), LOW);delaymul += 1;} else {bitWrite(cSelect, 7-(3), HIGH);};
-        if (numb[3] == numb[i]) {bitWrite(cSelect, 7-(4), LOW);delaymul += 1;} else {bitWrite(cSelect, 7-(4), HIGH);};
+        if ((numb[2] == numb[i]) and (statDP[2] == statDP[i])) {bitWrite(cSelect, 7-(3), LOW);delaymul += 1;} else {bitWrite(cSelect, 7-(3), HIGH);};
+        if ((numb[3] == numb[i]) and (statDP[3] == statDP[i])) {bitWrite(cSelect, 7-(4), LOW);delaymul += 1;} else {bitWrite(cSelect, 7-(4), HIGH);};
         
         bitWrite(shiftByte0, 7-(0), bitRead(cSelect,7-(0)));//CD1 //keep LOW if CDL1L2L3 is HIGH
         bitWrite(shiftByte0, 7-(1), bitRead(cSelect,7-(1)));//CD2 //keep LOW if CDL1L2L3 is HIGH
