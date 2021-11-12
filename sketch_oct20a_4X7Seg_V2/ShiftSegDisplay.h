@@ -108,9 +108,9 @@ class ShiftSegDisplay
     void showL1L2L3Display(boolean set_L1, boolean set_L2, boolean set_L3){
       shiftByte0 = 0b00000000;// //Used 0bCCACACAC
       shiftByte1 = 0b00000000;// //Used 0bAAAAANNN
-      bitWrite(shiftByte1, 7-(2), set_L1);//A L1
-      bitWrite(shiftByte1, 7-(4), set_L2);//B L2
-      bitWrite(shiftByte1, 7-(1), set_L3);//C L3
+      bitWrite(shiftByte1, 7-(2), !set_L1);//A L1
+      bitWrite(shiftByte1, 7-(4), !set_L2);//B L2
+      bitWrite(shiftByte1, 7-(1), !set_L3);//C L3
       
       bitWrite(shiftByte0, 7-(0), HIGH);//CD1 //keep LOW if CDL1L2L3 is HIGH
       bitWrite(shiftByte0, 7-(1), HIGH);//CD2 //keep LOW if CDL1L2L3 is HIGH
