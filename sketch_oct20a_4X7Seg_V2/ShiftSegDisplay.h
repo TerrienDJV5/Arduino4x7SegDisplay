@@ -108,9 +108,9 @@ class ShiftSegDisplay
     void showL1L2L3Display(boolean set_L1, boolean set_L2, boolean set_L3){
       shiftByte0 = 0b00000000;// //Used 0bCCACACAC
       shiftByte1 = 0b00000000;// //Used 0bAAAAANNN
-      bitWrite(shiftByte1, 7-(2), !set_L1);//A L1
-      bitWrite(shiftByte1, 7-(4), !set_L2);//B L2
-      bitWrite(shiftByte1, 7-(1), !set_L3);//C L3
+      bitWrite(shiftByte1, 7-(2), set_L1);//A L1
+      bitWrite(shiftByte1, 7-(4), set_L2);//B L2
+      bitWrite(shiftByte1, 7-(1), set_L3);//C L3
       
       bitWrite(shiftByte0, 7-(0), HIGH);//CD1 //keep LOW if CDL1L2L3 is HIGH
       bitWrite(shiftByte0, 7-(1), HIGH);//CD2 //keep LOW if CDL1L2L3 is HIGH
@@ -118,10 +118,10 @@ class ShiftSegDisplay
       bitWrite(shiftByte0, 7-(5), HIGH);//CD3 //keep LOW if CDL1L2L3 is HIGH
       bitWrite(shiftByte0, 7-(7), HIGH);//CD4 //keep LOW if CDL1L2L3 is HIGH
       writeShift2x(latchPin, dataPin, clockPin, shiftByte0, shiftByte1|extraOutPutPins);
-      delay(1);
+      delay(1000);
     };
   public:
-    void showSimpleValue();
+  	void showSimpleValue();
     ShiftSegDisplay(byte latchPin, byte clockPin, byte dataPin) {
       // Use 'this->' to make the difference between the
       // 'pin' attribute of the class and the 
@@ -137,12 +137,12 @@ class ShiftSegDisplay
       pinMode(dataPin, OUTPUT);
       // Always try to avoid duplicate code.
     };
-    
-    
-    
+  	
+  	
+  	
     //add Display Modes
-    //Normal
-    //Time
+  	//Normal
+  	//Time
     //temperature C
     //temperature F
     //Normal HEX
@@ -180,8 +180,8 @@ class ShiftSegDisplay
           break;
         };
       };
-      Serial.println(cstr);
-      Serial.println(cstrNew);
+      //Serial.println(cstr);
+      //Serial.println(cstrNew);
       char charInput[charInputLength] = "          ";// = "-.8.5.1.:'";//SDSDSDSD {L1L2} L3
       for (byte i=0; i<=sizeof(cstrNew)-1; i++){
         charInput[i] = cstrNew[i];
@@ -189,7 +189,7 @@ class ShiftSegDisplay
       for (byte i=0; i<=sizeof(modeSet)-1; i++){
         charInput[i+sizeof(cstrNew)-1] = modeSet[i];
       };
-      Serial.println(charInput);
+      //Serial.println(charInput);
       showFromChar(charInput , delayrepeat);
     };
     
@@ -202,11 +202,12 @@ class ShiftSegDisplay
       // {0|1|2|3|4|5|6|7|8|9|A|b|C|d|E|F| |-}
       char modeSeg[19] = "0123456789AbCdEF -";
       // { |.}
+      Serial.println(charInput);
       char modeDec[3] = " .";
       boolean set_DP = (charInput[1]==modeDec[1]|charInput[3]==modeDec[1] | charInput[5]==modeDec[1] | charInput[7]==modeDec[1]);//TrueHIGH , FalseLOW
-      boolean set_L1 = (charInput[7]==modeL1L2[1])|(charInput[7]==modeL1L2[3]);//TrueHIGH , FalseLOW
-      boolean set_L2 = (charInput[7]==modeL1L2[2])|(charInput[7]==modeL1L2[3]);//TrueHIGH , FalseLOW
-      boolean set_L3 = (charInput[8]==modeL3[1]);//TrueHIGH , FalseLOW  //Used for temperature
+      boolean set_L1 = (charInput[8]==modeL1L2[2])|(charInput[8]==modeL1L2[3]);//TrueHIGH , FalseLOW
+      boolean set_L2 = (charInput[8]==modeL1L2[1])|(charInput[8]==modeL1L2[3]);//TrueHIGH , FalseLOW
+      boolean set_L3 = (charInput[9]==modeL3[1]);//TrueHIGH , FalseLOW  //Used for temperature
       byte set_DP_POS = 0b0000;
       bitWrite(set_DP_POS, 3 , (charInput[1]==modeDec[1]));
       bitWrite(set_DP_POS, 2 , (charInput[3]==modeDec[1]));
@@ -234,8 +235,8 @@ class ShiftSegDisplay
         masterSetDisplay(numb, set_DP, set_DP_POS, set_L1, set_L2, set_L3, set_extraPins);
       };
     };
-    
-  
+  	
+	
     void masterSetDisplay(byte inputDigits[4], boolean set_DP_, byte set_DP_POS_, boolean set_L1_, boolean set_L2_, boolean set_L3_, byte extraOutPutPins){
       byte shiftByte0 = 0b00000000;// //Used 0bCCACACAC
       byte shiftByte1 = 0b00000000;// //Used 0bAAAAANNN
