@@ -202,7 +202,6 @@ class ShiftSegDisplay
       // {0|1|2|3|4|5|6|7|8|9|A|b|C|d|E|F| |-}
       char modeSeg[19] = "0123456789AbCdEF -";
       // { |.}
-      Serial.println(charInput);
       char modeDec[3] = " .";
       boolean set_DP = (charInput[1]==modeDec[1]|charInput[3]==modeDec[1] | charInput[5]==modeDec[1] | charInput[7]==modeDec[1]);//TrueHIGH , FalseLOW
       boolean set_L1 = (charInput[8]==modeL1L2[2])|(charInput[8]==modeL1L2[3]);//TrueHIGH , FalseLOW
