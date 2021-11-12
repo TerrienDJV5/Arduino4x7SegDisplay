@@ -43,7 +43,7 @@ void setup() {
 
 void loop() {
   value = analogRead(A3);
-  //displaySeg.showFromChar("-.-.-.-:'");
+  //displaySeg.showFromChar("-.-.-.-.:'");
   displaySeg.showSimpleValue(count);
   //displaySeg.showSimpleValue(value);
   
