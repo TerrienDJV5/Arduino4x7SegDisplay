@@ -118,7 +118,7 @@ class ShiftSegDisplay
       bitWrite(shiftByte0, 7-(5), HIGH);//CD3 //keep LOW if CDL1L2L3 is HIGH
       bitWrite(shiftByte0, 7-(7), HIGH);//CD4 //keep LOW if CDL1L2L3 is HIGH
       writeShift2x(latchPin, dataPin, clockPin, shiftByte0, shiftByte1|extraOutPutPins);
-      delay(1000);
+      delay(1);
     };
   public:
   	void showSimpleValue();
