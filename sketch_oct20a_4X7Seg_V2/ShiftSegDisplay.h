@@ -72,7 +72,7 @@ class ShiftSegDisplay
     static const byte charInputLength = 11;
     const byte extraData4Input = 2;
     
-    const byte segscreenBIN[18] = {
+    const byte segscreenBIN[20] = {
       //abcdefg-
       0b11111100,//0
       0b01100000,//1
@@ -92,8 +92,10 @@ class ShiftSegDisplay
       0b10001110,//F
       0b00000000,//None
       0b00000010,//-
+      0b00111010,//o
+      0b00001010,//r
     };
-    char segscreenchar[19] = "0123456789AbCdEF -";
+    char segscreenchar[21] = "0123456789AbCdEF -or";
     byte shiftByte0;
     byte shiftByte1;
     byte extraOutPutPins;
@@ -191,8 +193,13 @@ class ShiftSegDisplay
       for (byte i=0; i<=sizeof(modeSet)-1; i++){
         charInput[i+sizeof(cstrNew)-1] = modeSet[i];
       };
-      //Serial.println(charInput);
-      showFromChar(charInput , delayrepeat);
+      if (numberIN>=9999.0){
+        char errorChar[11] = "E.r.o.r.:'";
+        showFromChar(errorChar , delayrepeat);
+      } else {
+        //Serial.println(charInput);
+        showFromChar(charInput , delayrepeat);
+      };
     };
     
     void showFromChar(char charInput[charInputLength] , int delayrepeat=0){
@@ -201,8 +208,8 @@ class ShiftSegDisplay
       char modeL1L2[5] = " .*:";
       // { |'}
       char modeL3[3] = " '";
-      // {0|1|2|3|4|5|6|7|8|9|A|b|C|d|E|F| |-}
-      char modeSeg[19] = "0123456789AbCdEF -";
+      // {0|1|2|3|4|5|6|7|8|9|A|b|C|d|E|F| |-|o|r}
+      char modeSeg[21] = "0123456789AbCdEF -or";
       // { |.}
       char modeDec[3] = " .";
       boolean set_DP = (charInput[1]==modeDec[1]|charInput[3]==modeDec[1] | charInput[5]==modeDec[1] | charInput[7]==modeDec[1]);//TrueHIGH , FalseLOW

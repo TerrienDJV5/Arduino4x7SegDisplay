@@ -57,4 +57,5 @@ void loop() {
   
   
   count += 0.01;
+  count += valueFloat*10;
 }
