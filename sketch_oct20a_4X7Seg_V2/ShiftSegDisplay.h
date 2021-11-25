@@ -193,6 +193,16 @@ class ShiftSegDisplay
       for (byte i=0; i<=sizeof(modeSet)-1; i++){
         charInput[i+sizeof(cstrNew)-1] = modeSet[i];
       };
+
+      //To convert a number to scientific
+      //  notation, place or move the decimal
+      //  point of a number until the coefficient
+      //  of the number is greater than 1 and less than 10.
+      //Record down the coefficient (a) and 
+      //  count the number of steps the 
+      //  decimal point was moved.
+      //The number of steps moved (n) is taken as the exponent.
+      
       if (numberIN>=9999.0){
         char errorChar[11] = "E.r.o.r.:'";
         showFromChar(errorChar , delayrepeat);
