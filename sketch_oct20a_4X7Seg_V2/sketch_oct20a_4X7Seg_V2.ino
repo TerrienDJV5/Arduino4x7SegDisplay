@@ -12,20 +12,6 @@ float count = -5;
 
 
 
-void binLead(byte var) {
-  for (byte test = 0b10000000; test; test >>= 1) {
-    Serial.write(var  & test ? '1' : '0');
-  };
-  Serial.println();
-};
-
-void printarray(byte* arrayIN){
-  for (byte i=0;i<=3;i++){
-    Serial.print(byte(arrayIN[i]));
-    Serial.print(" ");
-  };
-  Serial.println();
-};
 
 
 int value;
@@ -59,3 +45,22 @@ void loop() {
   count += 0.01;
   count += valueFloat*10;
 }
+
+
+
+
+
+void binLead(byte var) {
+  for (byte test = 0b10000000; test; test >>= 1) {
+    Serial.write(var  & test ? '1' : '0');
+  };
+  Serial.println();
+};
+
+void printarray(byte* arrayIN){
+  for (byte i=0;i<=3;i++){
+    Serial.print(byte(arrayIN[i]));
+    Serial.print(" ");
+  };
+  Serial.println();
+};
