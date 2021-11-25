@@ -93,7 +93,7 @@ class ShiftSegDisplay
       0b00000000,//None
       0b00000010,//-
     };
-    char segscreenchar[18] = "0123456789AbCdEF ";
+    char segscreenchar[19] = "0123456789AbCdEF -";
     byte shiftByte0;
     byte shiftByte1;
     byte extraOutPutPins;
@@ -149,6 +149,8 @@ class ShiftSegDisplay
     //add Used For The 3 Unused 74hc595 Pins
     void showSimpleValue(float numberIN , int delayrepeat=0){
       char modeSet[3] = ":'";
+      modeSet[0] = ' ';
+      modeSet[1] = ' ';
       byte cstrLength = (charInputLength-extraData4Input);
       char cstr[cstrLength];
       char cstrNew[cstrLength];

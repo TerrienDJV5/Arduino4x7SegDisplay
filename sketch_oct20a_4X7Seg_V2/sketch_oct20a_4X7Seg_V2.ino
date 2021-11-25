@@ -30,7 +30,7 @@ void printarray(byte* arrayIN){
 
 int value;
 int lastValue;
-
+float valueFloat;
 
 void setup() {
   Serial.begin(9600);
@@ -48,7 +48,11 @@ void loop() {
   //displaySeg.showSimpleValue(value);
   
   
+  
+  valueFloat = float(value) / 1024;
   //Serial.println(value);
+  //Serial.println(valueFloat);
+  //Serial.println();
   lastValue = value;
   
   
