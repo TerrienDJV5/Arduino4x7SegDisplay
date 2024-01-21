@@ -172,14 +172,15 @@ class ShiftSegDisplay
           cout<< "Wrong Input Fool!" << endl;
         }
       }
-      bool dpin = ((dataIn & useMask)!=0);
+      bool dpin;
       bool cpin;
       for (unsigned int i=0; i<8; i++){
+        dpin = ((dataIn & useMask)!=0);
         cpin = LOW;//BoolPinState
-        digitalWrite(clockPin, cpin);
-        digitalWrite(dataPin, dpin);
+        digitalPinWrite(clockPin, cpin);
+        digitalPinWrite(dataPin, dpin);
         cpin = HIGH;//BoolPinState
-        digitalWrite(clockPin, cpin);
+        digitalPinWrite(clockPin, cpin);
         //shift data
         if (bitOrder == LSBFIRST ){
           dataIn = dataIn >> 1;
@@ -190,12 +191,12 @@ class ShiftSegDisplay
       }
     }
     void writeShift2x(byte latchPin, byte dataPin, byte clockPin, byte shiftByte0, byte shiftByte1){
-      digitalWrite(latchPin, LOW);
+      digitalPinWrite(latchPin, LOW);
       shiftOut(dataPin, clockPin, LSBFIRST, (u_int8_t)shiftByte1);//LSBFIRST , MSBFIRST //Used 0bAAAAANNN
       shiftOut(dataPin, clockPin, LSBFIRST, (u_int8_t)shiftByte0);//LSBFIRST , MSBFIRST //Used 0bCCACACAC
       //return the latch pin high to signal chip that it
       //no longer needs to listen for information
-      digitalWrite(latchPin, HIGH);
+      digitalPinWrite(latchPin, HIGH);
     };
     void showL1L2L3Display(bool set_L1, bool set_L2, bool set_L3){
       shiftByte0 = byte{0b00000000};// //Used 0bCCACACAC
@@ -218,7 +219,7 @@ class ShiftSegDisplay
     byte dataPin;//Pin connected to DS of 74HC595
   	void showSimpleValue();
     
-  	virtual void digitalWrite(byte selectPin, bool newState){
+  	virtual void digitalPinWrite(byte selectPin, bool newState){
       cout << "(Virtual Func) PIN#"<< selectPin <<":" << newState << endl;
     };
     //virtual void delay(unsigned int);
@@ -449,7 +450,7 @@ class ShiftSegDisplayArduino : public ShiftSegDisplay
       //pinMode(dataPin, OUTPUT);
       // Always try to avoid duplicate code.
     };
-    void digitalWrite(byte selectPin, bool newState){
+    void digitalPinWrite(byte selectPin, bool newState){
       cout << "PIN#"<< selectPin <<":" << newState << endl;
     };
     
