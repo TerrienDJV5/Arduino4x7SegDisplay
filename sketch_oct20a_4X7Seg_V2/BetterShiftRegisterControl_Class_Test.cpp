@@ -3,42 +3,44 @@
 
 
 
-#include "BetterShiftRegisterControl.cpp"
+#include <bitset>
+#include <iostream>
+std::ostream& operator<<(std::ostream& os, std::byte b)
+{
+    return os << std::bitset<8>(std::to_integer<int>(b));
+}
 
 using namespace std;
 
-/*
-enum PinNames_of_74HC595 {
-  Clock_74HC595, 
-  Data_74HC595, 
-  Latch_74HC595, 
-  Reset_74HC595, 
-  OutputEnable_74HC595, 
-};
-*/
+#include "BetterShiftRegisterControl.h"
 
-/*
-_Data_PinIDMask_
-_Clock_PinIDMask_
-_Latch_PinIDMask_
-_Reset_PinIDMask_
-_OutputEnable_PinIDMask_
-_Empty_PinIDMask_
-*/
-//BetterShiftRegisterControl BSRC_enum;
 
-void BetterShiftRegisterControl::registerPinWrite(std::byte selectPinID, bool newState)
+
+
+
+void BetterShiftRegisterControl::registerPinWrite(__uint16_t selectPinID, bool newState)
 {
   std::cout << "(overwritten Func) register_PIN:"<<"(ID:"<< selectPinID <<")" <<" == " << newState << std::endl;
 };
 
+/*
 BetterShiftRegisterControl::_pinName2IDMaskList_enum config_Connected_Pins[5] = {
   BetterShiftRegisterControl::_pinName2IDMaskList_enum::_Data_PinIDMask_,
   BetterShiftRegisterControl::_pinName2IDMaskList_enum::_Clock_PinIDMask_,
   BetterShiftRegisterControl::_pinName2IDMaskList_enum::_Latch_PinIDMask_,
 };
 BetterShiftRegisterControl shiftregister_Test(2, config_Connected_Pins);
+*/
 
+/*
+IC_P_DS
+IC_P_SH_CP
+IC_P_ST_CP
+IC_P_MR
+IC_P_OE
+*/
+
+BetterShiftRegisterControl shiftregister_Test(2, IC_P_DS|IC_P_SH_CP|IC_P_ST_CP);
 //u_int8_t pinconfig = shiftregister_Test.createPinUsageConfig(true, true, true, false, false);
 
 
@@ -52,7 +54,8 @@ int main()
   shiftregister_Test.setPinID(Latch_74HC595, 36);
   shiftregister_Test.setPinID(Reset_74HC595, 37);
   shiftregister_Test.setPinID(OutputEnable_74HC595, 38);
-  std::cout << shiftregister_Test.getPinID((PinNames_of_74HC595)Data_74HC595) <<":" 
+  __uint16_t pinID_data = shiftregister_Test.getPinID((PinNames_of_74HC595)Data_74HC595);
+  std::cout << pinID_data <<":" 
     << shiftregister_Test.getPinID(Clock_74HC595) <<":" 
     << shiftregister_Test.getPinID(Latch_74HC595) <<":" 
     << shiftregister_Test.getPinID(Reset_74HC595) <<":" 

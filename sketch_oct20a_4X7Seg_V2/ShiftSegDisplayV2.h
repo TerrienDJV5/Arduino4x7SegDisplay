@@ -14,6 +14,7 @@
 
 
 #include "BitManipulate.h"
+#include "BetterShiftRegisterControl.cpp"
 
 //#include "ShiftSegDisplayV2.cpp"
 
@@ -38,8 +39,9 @@ std::ostream& operator<<(std::ostream& os, std::byte b)
 
 //typedef bitset<8> BYTE;
 //typedef bitset<1> BOOLEAN;
-enum BoolPinState {LOW = false, HIGH = true};
-enum ShiftOrder {LSBFIRST, MSBFIRST};
+
+//enum BoolPinState {LOW = false, HIGH = true};
+//enum ShiftOrder {LSBFIRST, MSBFIRST};
 enum PinModeOptions {OUTPUT, INPUT, INPUT_PULLUP};
 
 //#include "Arduino.h"
@@ -90,15 +92,10 @@ enum PinModeOptions {OUTPUT, INPUT, INPUT_PULLUP};
 
 
 
-union Data {
-  std::byte b[2];
-  int value;
-};
-
-
 
 class ShiftSegDisplay
 {
+  protected:
   private:
     static const u_int8_t charInputLength = u_int8_t(11);//11
     const u_int8_t extraData4Input = u_int8_t{2};//2
@@ -141,7 +138,7 @@ class ShiftSegDisplay
     std::byte latchPin;//Pin connected to ST_CP of 74HC595
     std::byte clockPin;//Pin connected to SH_CP of 74HC595
     std::byte dataPin;//Pin connected to DS of 74HC595
-    std::byte OutputEnablePin;//Pin connected to DS of 74HC595
+    std::byte OutputEnablePin;//Pin connected to OE of 74HC595
     ShiftSegDisplay(u_int8_t latchPin, u_int8_t clockPin, u_int8_t dataPin, u_int8_t OutputEnablePin)
     {
       // Use 'this->' to make the difference between the
