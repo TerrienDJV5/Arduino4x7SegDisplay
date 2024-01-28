@@ -20,9 +20,9 @@ n: which bit of the number to write, starting at 0 for the least-significant (ri
 b: the value to write to the bit (0 or 1).
 */
 void bit_Write(__uint8_t &x, __uint8_t n, bool b);
-void bit_Write(__uint16_t &x, __uint16_t n, bool b);
-void bit_Write(__uint32_t &x, __uint32_t n, bool b);
-void bit_Write(__uint64_t &x, __uint64_t n, bool b);
+void bit_Write(__uint16_t &x, __uint8_t n, bool b);
+void bit_Write(__uint32_t &x, __uint8_t n, bool b);
+void bit_Write(__uint64_t &x, __uint8_t n, bool b);
 
 /*
 Reads a bit of a variable, e.g. bool, int. Note that float & double are not supported. You can read the bit of variables up to an unsigned long long (64 bits / 8 bytes).
@@ -34,9 +34,9 @@ returns
 The value of the bit (0 or 1).
 */
 bool bit_Read(__uint8_t x, __uint8_t n);
-bool bit_Read(__uint16_t x, __uint16_t n);
-bool bit_Read(__uint32_t x, __uint32_t n);
-bool bit_Read(__uint64_t x, __uint64_t n);
+bool bit_Read(__uint16_t x, __uint8_t n);
+bool bit_Read(__uint32_t x, __uint8_t n);
+bool bit_Read(__uint64_t x, __uint8_t n);
 
 
 #endif

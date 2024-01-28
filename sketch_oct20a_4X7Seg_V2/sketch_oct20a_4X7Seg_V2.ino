@@ -10,11 +10,14 @@
 void ShiftSegDisplay::digitalPinWrite(__uint8_t selectPin, bool newState){
   //put arduino digitalWrite Here
   digitalWrite(selectPin, newState);
-  //cout << "PIN#"<< selectPin <<":" << newState << endl;
+};
+void ShiftSegDisplay::hiddenPinMode(__uint8_t selectPin, __uint8_t newMode){
+  //put arduino pinMode Here
+  pinMode(selectPin, newMode);
 };
 
-
-ShiftSegDisplay displaySeg(34,35,36,37);
+ShiftSegDisplay displaySeg(12,13,14,27);
+//ShiftSegDisplay displaySeg(32,35,34,33);
 float countv = -5;
 
 int value;
@@ -22,20 +25,21 @@ int lastValue;
 float valueFloat;
 
 void setup() {
-  Serial.begin(9600);
-  
-  pinMode(A3, INPUT);
+  Serial.begin(115200);
+  displaySeg.begin();
+  //pinMode(A3, INPUT);
 }
 
 //PORTC is Analog pins
 
 
-void loop() {
-  value = analogRead(A3);
+void loop()
+{
+  value = 100;//analogRead(A3);
   //displaySeg.showFromChar("-.-.-.-.:'");
   displaySeg.showSimpleValue(countv,0);
   //displaySeg.showSimpleValue(value);
-  
+  Serial.println(countv);
   
   
   valueFloat = float(value) / 1024;
@@ -50,7 +54,7 @@ void loop() {
 }
 
 
-
+//please Test Code on Real device
 
 
 void binLead(byte var) {

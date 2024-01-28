@@ -2,6 +2,8 @@
 //BetterShiftRegControl.h
 
 
+//https://github.com/arduino/ArduinoCore-avr/blob/master/cores/arduino/wiring_shift.c
+
 #ifndef BetterShiftRegControl_h
 #define BetterShiftRegControl_h
 
@@ -13,16 +15,17 @@
 #define IC_P_MR 0b00001000
 #define IC_P_OE 0b00100000
 
+#include "Arduino.h"//used for pin control
+
 #include "BitManipulate.h"
 
 
-#include <bitset>
-#include <cstddef>
-
-#include <iostream>
+//#include <bitset>
+//#include <cstddef>
 
 #include <string.h>
 
+#include <iostream>
 #include <sstream>
 
 /*
@@ -52,7 +55,9 @@ union Data {
 #define LOW false
 #define HIGH true
 //enum PinModeOptions {OUTPUT, INPUT, INPUT_PULLUP};
-enum ShiftOrder {LSB_FIRST, MSB_FIRST};
+#define LSBFIRST 0
+#define MSBFIRST 1
+enum ShiftOrder {LSB_FIRST = LSBFIRST, MSB_FIRST = MSBFIRST};
 enum PinNames_of_74HC595 {
   Data_74HC595,
   Clock_74HC595,
@@ -76,7 +81,7 @@ class BetterShiftRegControl
     bool pin_Reset_connected = false;
     /*<-- variables -->*/
 
-    ShiftOrder _DataShiftOrder;
+    __uint8_t _DataShiftOrder;
 
     __uint16_t _dataPinID;//GPIO ID of Pin connected to DS of 74HC595
     __uint16_t _clockPinID;//GPIO ID of Pin connected to SH_CP of 74HC595
@@ -126,7 +131,7 @@ class BetterShiftRegControl
       _Reset_PinIDMask_ = _resetPinMask, 
       _OutputEnable_PinIDMask_ = _outputEnablePinMask, 
     };
-    
+    void setupPinModes();
     
     static __uint8_t createPinUsageConfig(bool dataPin, bool clockPin, bool latchPin, bool outputenablePin, bool resetPin);
     
@@ -136,16 +141,18 @@ class BetterShiftRegControl
     
     void set_shift_register_outputs(__uint32_t registerSelect, __uint8_t newPinStates);
     
-    void updateShiftRegister(ShiftOrder bitshiftorder);
+    void updateShiftRegister(__uint8_t bitshiftorder);
     
-    void setShiftOrder(ShiftOrder bitshiftorder);
+    void setShiftOrder(__uint8_t bitshiftorder);
+    void update();
     
     virtual void registerPinWrite(__uint16_t selectPinID, bool newState);
-    /*
-    {
-      std::cout << "(Virtual Func) register_PIN:"<<"(ID:"<< selectPinID <<")" <<" == " << newState << std::endl;
-    };
-    //*/
+    virtual __uint8_t registerPinRead( __uint16_t selectPinID );
+    virtual void registerPinModeSet( __uint8_t selectPinID, __uint8_t newMode );
+    
+    uint8_t shiftIn(uint8_t dataPin, uint8_t clockPin, uint8_t bitOrder);
+    void shiftOut(uint8_t dataPin, uint8_t clockPin, uint8_t bitOrder, uint8_t val);
+    
     
 };
 

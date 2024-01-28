@@ -59,7 +59,7 @@ int main()
   
   shiftregister_Test.set_shift_register_outputs(0, 0b10101010);
   shiftregister_Test.set_shift_register_outputs(1, 0b11110000);
-  shiftregister_Test.updateShiftRegister(MSB_FIRST);
+  shiftregister_Test.updateShiftRegister(MSBFIRST);
   return 0;
 };
 
