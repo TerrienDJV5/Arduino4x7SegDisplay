@@ -2,9 +2,9 @@
 //ShiftSegDisplayV2_Class_Test.cpp
 
 
-#include "ShiftSegDisplayV2.cpp"
+#include "../ShiftSegDisplayV2.h"
 
-void ShiftSegDisplay::digitalPinWrite(std::byte selectPin, bool newState){
+void ShiftSegDisplay::digitalPinWrite(__uint8_t selectPin, bool newState){
   std::cout << "PIN#"<< selectPin <<":" << newState << std::endl;
 };
 

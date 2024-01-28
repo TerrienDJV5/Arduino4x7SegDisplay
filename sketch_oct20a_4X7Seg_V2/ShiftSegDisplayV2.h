@@ -3,7 +3,6 @@
 
 
 
-
 /* OLD
   ShiftSegDisplay.h - Library for flashing Morse code.
   Created by David A. Mellis, November 2, 2007.
@@ -14,22 +13,20 @@
 
 
 #include "BitManipulate.h"
-#include "BetterShiftRegisterControl.cpp"
+#include "BetterShiftRegControl.h"
 
 //#include "ShiftSegDisplayV2.cpp"
 
 using namespace std;
 
 
-#include <bitset>
-#include <cstddef>
-#include <iostream>
 
-
-std::ostream& operator<<(std::ostream& os, std::byte b)
+/*
+std::ostream& operator<<(std::ostream& os, __uint8_t b)
 {
     return os << std::bitset<8>(std::to_integer<int>(b));
 }
+*/
 
 #include <string.h>
 
@@ -42,7 +39,7 @@ std::ostream& operator<<(std::ostream& os, std::byte b)
 
 //enum BoolPinState {LOW = false, HIGH = true};
 //enum ShiftOrder {LSBFIRST, MSBFIRST};
-enum PinModeOptions {OUTPUT, INPUT, INPUT_PULLUP};
+//enum PinModeOptions {OUTPUT, INPUT, INPUT_PULLUP};
 
 //#include "Arduino.h"
 
@@ -100,58 +97,58 @@ class ShiftSegDisplay
     static const u_int8_t charInputLength = u_int8_t(11);//11
     const u_int8_t extraData4Input = u_int8_t{2};//2
     
-    const std::byte segscreenBIN[20] = {
+    const __uint8_t segscreenBIN[20] = {
       //abcdefg-
-      std::byte{0b11111100},//0
-      std::byte{0b01100000},//1
-      std::byte{0b11011010},//2
-      std::byte{0b11110010},//3
-      std::byte{0b01100110},//4
-      std::byte{0b10110110},//5
-      std::byte{0b10111110},//6
-      std::byte{0b11100000},//7
-      std::byte{0b11111110},//8
-      std::byte{0b11110110},//9
-      std::byte{0b11101110},//A
-      std::byte{0b00111110},//B
-      std::byte{0b10011100},//C
-      std::byte{0b01111010},//D
-      std::byte{0b10011110},//E
-      std::byte{0b10001110},//F
-      std::byte{0b00000000},//None
-      std::byte{0b00000010},//-
-      std::byte{0b00111010},//o
-      std::byte{0b00001010},//r
+      __uint8_t{0b11111100},//0
+      __uint8_t{0b01100000},//1
+      __uint8_t{0b11011010},//2
+      __uint8_t{0b11110010},//3
+      __uint8_t{0b01100110},//4
+      __uint8_t{0b10110110},//5
+      __uint8_t{0b10111110},//6
+      __uint8_t{0b11100000},//7
+      __uint8_t{0b11111110},//8
+      __uint8_t{0b11110110},//9
+      __uint8_t{0b11101110},//A
+      __uint8_t{0b00111110},//B
+      __uint8_t{0b10011100},//C
+      __uint8_t{0b01111010},//D
+      __uint8_t{0b10011110},//E
+      __uint8_t{0b10001110},//F
+      __uint8_t{0b00000000},//None
+      __uint8_t{0b00000010},//-
+      __uint8_t{0b00111010},//o
+      __uint8_t{0b00001010},//r
     };
     char segscreenchar[21] = "0123456789AbCdEF -or";
-    std::byte shiftByte0;
-    std::byte shiftByte1;
-    std::byte extraOutPutPins;
-    void shiftOut(std::byte dataPin, std::byte clockPin, ShiftOrder bitOrder, u_int8_t dataIn);
-    void writeShift2x(std::byte latchPin, std::byte dataPin, std::byte clockPin, std::byte shiftByte0, std::byte shiftByte1);
+    __uint8_t shiftByte0;
+    __uint8_t shiftByte1;
+    __uint8_t extraOutPutPins;
+    void shiftOut(__uint8_t dataPin, __uint8_t clockPin, ShiftOrder bitOrder, u_int8_t dataIn);
+    void writeShift2x(__uint8_t latchPin, __uint8_t dataPin, __uint8_t clockPin, __uint8_t shiftByte0, __uint8_t shiftByte1);
     void showL1L2L3Display(bool set_L1, bool set_L2, bool set_L3);
     void delay(float time)
     {
       std::cout<<"delay(" << time << ")"<<std::endl;
     };
   public:
-    std::byte latchPin;//Pin connected to ST_CP of 74HC595
-    std::byte clockPin;//Pin connected to SH_CP of 74HC595
-    std::byte dataPin;//Pin connected to DS of 74HC595
-    std::byte OutputEnablePin;//Pin connected to OE of 74HC595
+    __uint8_t latchPin;//Pin connected to ST_CP of 74HC595
+    __uint8_t clockPin;//Pin connected to SH_CP of 74HC595
+    __uint8_t dataPin;//Pin connected to DS of 74HC595
+    __uint8_t OutputEnablePin;//Pin connected to OE of 74HC595
     ShiftSegDisplay(u_int8_t latchPin, u_int8_t clockPin, u_int8_t dataPin, u_int8_t OutputEnablePin)
     {
       // Use 'this->' to make the difference between the
       // 'pin' attribute of the class and the 
       // local variable 'pin' created from the parameter.
-      this->latchPin = (std::byte)latchPin;
-      this->clockPin = (std::byte)clockPin;
-      this->dataPin = (std::byte)dataPin;
-      this->OutputEnablePin = (std::byte)OutputEnablePin;
+      this->latchPin = (__uint8_t)latchPin;
+      this->clockPin = (__uint8_t)clockPin;
+      this->dataPin = (__uint8_t)dataPin;
+      this->OutputEnablePin = (__uint8_t)OutputEnablePin;
     };
-  	void showSimpleValue();
+  	
     
-  	virtual void digitalPinWrite(std::byte selectPin, bool newState);
+  	virtual void digitalPinWrite(__uint8_t selectPin, bool newState);
     /*
     {
       std::cout << "(Virtual Func) PIN#"<< selectPin <<":" << newState << std::endl;
@@ -168,7 +165,7 @@ class ShiftSegDisplay
     //add Used For The 3 Unused 74hc595 Pins
     void showSimpleValue(float numberIN , int delayrepeat);
     void showFromChar(char charInput[charInputLength] , int delayrepeat);
-    void masterSetDisplay(std::byte inputDigits[4], bool set_DP_, std::byte set_DP_POS_, bool set_L1_, bool set_L2_, bool set_L3_, std::byte extraOutPutPins);
+    void masterSetDisplay(__uint8_t inputDigits[4], bool set_DP_, __uint8_t set_DP_POS_, bool set_L1_, bool set_L2_, bool set_L3_, __uint8_t extraOutPutPins);
 };
 
 

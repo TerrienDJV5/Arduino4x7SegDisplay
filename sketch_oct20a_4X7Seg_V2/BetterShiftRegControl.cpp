@@ -1,10 +1,10 @@
 //By Darrien Varrette
-//BetterShiftRegisterControl.cpp
+//BetterShiftRegControl.cpp
 
-#include "BetterShiftRegisterControl.h"
+#include "BetterShiftRegControl.h"
 
 
-BetterShiftRegisterControl::BetterShiftRegisterControl(__uint16_t register_init_count, __uint8_t connected_Pins_mask)
+BetterShiftRegControl::BetterShiftRegControl(__uint16_t register_init_count, __uint8_t connected_Pins_mask)
 {
   this->_init_BetterShiftRegisterControl_Private(register_init_count);
   std::cout << "Fata Pin: " << (connected_Pins_mask&IC_P_DS) << std::endl;
@@ -15,7 +15,7 @@ BetterShiftRegisterControl::BetterShiftRegisterControl(__uint16_t register_init_
   this->_Connected_Pins_Mask = connected_Pins_mask;
 };
 
-void BetterShiftRegisterControl::_init_BetterShiftRegisterControl_Private(__uint16_t register_init_count)
+void BetterShiftRegControl::_init_BetterShiftRegisterControl_Private(__uint16_t register_init_count)
 {
   this->_registerCount = register_init_count;
   this->_init_registerPinState();
@@ -26,13 +26,13 @@ void BetterShiftRegisterControl::_init_BetterShiftRegisterControl_Private(__uint
   this->_set_registerPinState((PinNames_of_74HC595)OutputEnable_74HC595, LOW);
 };
 
-void BetterShiftRegisterControl::_init_registerPinState()
+void BetterShiftRegControl::_init_registerPinState()
 {
   this->_registerPinState = (__uint8_t*)malloc( _registerCount );
 };
 
 
-void BetterShiftRegisterControl::_set_registerPinState(PinNames_of_74HC595 pinSelect, bool newState)
+void BetterShiftRegControl::_set_registerPinState(PinNames_of_74HC595 pinSelect, bool newState)
 {
   __uint8_t lastpinstate = this->_allPinStates;
   _pinName2IDMaskList_enum pinSelectMask;
@@ -69,7 +69,7 @@ void BetterShiftRegisterControl::_set_registerPinState(PinNames_of_74HC595 pinSe
 };
 
 
-void BetterShiftRegisterControl::_flush_registerPinState()
+void BetterShiftRegControl::_flush_registerPinState()
 {
   if (flushed_to_registers==false){
     __uint16_t pinID_OE = getPinID((PinNames_of_74HC595)OutputEnable_74HC595);
@@ -89,7 +89,7 @@ void BetterShiftRegisterControl::_flush_registerPinState()
 
 
 
-bool BetterShiftRegisterControl::_get_registerPinState(PinNames_of_74HC595 pinSelect)
+bool BetterShiftRegControl::_get_registerPinState(PinNames_of_74HC595 pinSelect)
 {
   switch (pinSelect)
   {
@@ -114,13 +114,13 @@ bool BetterShiftRegisterControl::_get_registerPinState(PinNames_of_74HC595 pinSe
   }
 };
 
-__uint8_t BetterShiftRegisterControl::createPinUsageConfig(bool dataPin, bool clockPin, bool latchPin, bool outputenablePin, bool resetPin)
+__uint8_t BetterShiftRegControl::createPinUsageConfig(bool dataPin, bool clockPin, bool latchPin, bool outputenablePin, bool resetPin)
 {
   return (_Clock_PinIDMask_*clockPin | _Data_PinIDMask_*dataPin | _Latch_PinIDMask_*latchPin | _Reset_PinIDMask_*resetPin | _OutputEnable_PinIDMask_*outputenablePin);
 };
 
 
-void BetterShiftRegisterControl::setPinID(PinNames_of_74HC595 pinSelect, __uint16_t input_PinID)
+void BetterShiftRegControl::setPinID(PinNames_of_74HC595 pinSelect, __uint16_t input_PinID)
 {
   switch(pinSelect)
   {
@@ -144,7 +144,7 @@ void BetterShiftRegisterControl::setPinID(PinNames_of_74HC595 pinSelect, __uint1
   }
 };
 
-__uint16_t BetterShiftRegisterControl::getPinID(PinNames_of_74HC595 pinSelect)
+__uint16_t BetterShiftRegControl::getPinID(PinNames_of_74HC595 pinSelect)
 {
   __uint16_t getPinID = 0;
   switch(pinSelect)
@@ -171,7 +171,7 @@ __uint16_t BetterShiftRegisterControl::getPinID(PinNames_of_74HC595 pinSelect)
   return getPinID;
 };
 
-void BetterShiftRegisterControl::set_shift_register_outputs(__uint32_t registerSelect, __uint8_t newPinStates)
+void BetterShiftRegControl::set_shift_register_outputs(__uint32_t registerSelect, __uint8_t newPinStates)
 {
   this->_registerPinState[ registerSelect ] = newPinStates;
 };
@@ -179,7 +179,7 @@ void BetterShiftRegisterControl::set_shift_register_outputs(__uint32_t registerS
 
 
 
-void BetterShiftRegisterControl::updateShiftRegister(ShiftOrder bitshiftorder)
+void BetterShiftRegControl::updateShiftRegister(ShiftOrder bitshiftorder)
 {
   __uint16_t pinID_OE = getPinID((PinNames_of_74HC595)OutputEnable_74HC595);
   __uint16_t pinID_CLK = getPinID((PinNames_of_74HC595)Clock_74HC595);
@@ -220,10 +220,10 @@ void BetterShiftRegisterControl::updateShiftRegister(ShiftOrder bitshiftorder)
       bool dataBit;
       switch (bitshiftorder)
       {
-        case LSBFIRST:
+        case LSB_FIRST:
           dataBit = dataBit_LSB;
           break;
-        case MSBFIRST:
+        case MSB_FIRST:
           dataBit = dataBit_MSB;
           break;
         default:
@@ -239,7 +239,7 @@ void BetterShiftRegisterControl::updateShiftRegister(ShiftOrder bitshiftorder)
   registerPinWrite(pinID_OE, LOW);//enable output of chip
 };
 
-void BetterShiftRegisterControl::setShiftOrder(ShiftOrder bitshiftorder)
+void BetterShiftRegControl::setShiftOrder(ShiftOrder bitshiftorder)
 {
   this->_DataShiftOrder = bitshiftorder;
 };

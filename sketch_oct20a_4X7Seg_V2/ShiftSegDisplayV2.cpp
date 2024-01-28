@@ -6,11 +6,11 @@
 
 
 
-void ShiftSegDisplay::shiftOut(std::byte dataPin, std::byte clockPin, ShiftOrder bitOrder, u_int8_t dataIn){
+void ShiftSegDisplay::shiftOut(__uint8_t dataPin, __uint8_t clockPin, ShiftOrder bitOrder, u_int8_t dataIn){
   u_int8_t useMask;
-  if (bitOrder == LSBFIRST ){
+  if (bitOrder == LSB_FIRST ){
     useMask = (u_int8_t){0b00000001};
-  } else if (bitOrder == MSBFIRST ){
+  } else if (bitOrder == MSB_FIRST ){
     useMask = (u_int8_t){0b10000000};
   }else{
     while (true){
@@ -27,34 +27,34 @@ void ShiftSegDisplay::shiftOut(std::byte dataPin, std::byte clockPin, ShiftOrder
     cpin = HIGH;//BoolPinState
     digitalPinWrite(clockPin, cpin);
     //shift data
-    if (bitOrder == LSBFIRST ){
+    if (bitOrder == LSB_FIRST ){
       dataIn = dataIn >> 1;
     }
-    if (bitOrder == MSBFIRST ){
+    if (bitOrder == MSB_FIRST ){
       dataIn = dataIn << 1;
     }
   }
 }
-void ShiftSegDisplay::writeShift2x(std::byte latchPin, std::byte dataPin, std::byte clockPin, std::byte shiftByte0, std::byte shiftByte1){
+void ShiftSegDisplay::writeShift2x(__uint8_t latchPin, __uint8_t dataPin, __uint8_t clockPin, __uint8_t shiftByte0, __uint8_t shiftByte1){
   digitalPinWrite(latchPin, LOW);
-  shiftOut(dataPin, clockPin, LSBFIRST, (u_int8_t)shiftByte1);//LSBFIRST , MSBFIRST //Used 0bAAAAANNN
-  shiftOut(dataPin, clockPin, LSBFIRST, (u_int8_t)shiftByte0);//LSBFIRST , MSBFIRST //Used 0bCCACACAC
+  shiftOut(dataPin, clockPin, LSB_FIRST, (u_int8_t)shiftByte1);//LSB_FIRST , MSB_FIRST //Used 0bAAAAANNN
+  shiftOut(dataPin, clockPin, LSB_FIRST, (u_int8_t)shiftByte0);//LSB_FIRST , MSB_FIRST //Used 0bCCACACAC
   //return the latch pin high to signal chip that it
   //no longer needs to listen for information
   digitalPinWrite(latchPin, HIGH);
 };
 void ShiftSegDisplay::showL1L2L3Display(bool set_L1, bool set_L2, bool set_L3){
-  shiftByte0 = std::byte{0b00000000};// //Used 0bCCACACAC
-  shiftByte1 = std::byte{0b00000000};// //Used 0bAAAAANNN
-  bitWrite(shiftByte1, 7-(2), set_L1);//A L1
-  bitWrite(shiftByte1, 7-(4), set_L2);//B L2
-  bitWrite(shiftByte1, 7-(1), set_L3);//C L3
+  shiftByte0 = __uint8_t{0b00000000};// //Used 0bCCACACAC
+  shiftByte1 = __uint8_t{0b00000000};// //Used 0bAAAAANNN
+  bit_Write(shiftByte1, 7-(2), set_L1);//A L1
+  bit_Write(shiftByte1, 7-(4), set_L2);//B L2
+  bit_Write(shiftByte1, 7-(1), set_L3);//C L3
   
-  bitWrite(shiftByte0, 7-(0), HIGH);//CD1 //keep LOW if CDL1L2L3 is HIGH
-  bitWrite(shiftByte0, 7-(1), HIGH);//CD2 //keep LOW if CDL1L2L3 is HIGH
-  bitWrite(shiftByte0, 7-(3), LOW);//CDL1L2L3 //keep LOW if CD1|CD2|CD3|CD4 are HIGH
-  bitWrite(shiftByte0, 7-(5), HIGH);//CD3 //keep LOW if CDL1L2L3 is HIGH
-  bitWrite(shiftByte0, 7-(7), HIGH);//CD4 //keep LOW if CDL1L2L3 is HIGH
+  bit_Write(shiftByte0, 7-(0), HIGH);//CD1 //keep LOW if CDL1L2L3 is HIGH
+  bit_Write(shiftByte0, 7-(1), HIGH);//CD2 //keep LOW if CDL1L2L3 is HIGH
+  bit_Write(shiftByte0, 7-(3), LOW);//CDL1L2L3 //keep LOW if CD1|CD2|CD3|CD4 are HIGH
+  bit_Write(shiftByte0, 7-(5), HIGH);//CD3 //keep LOW if CDL1L2L3 is HIGH
+  bit_Write(shiftByte0, 7-(7), HIGH);//CD4 //keep LOW if CDL1L2L3 is HIGH
   writeShift2x(latchPin, dataPin, clockPin, shiftByte0, shiftByte1|extraOutPutPins);
   delay(1);
 };
@@ -138,7 +138,7 @@ void ShiftSegDisplay::showSimpleValue(float numberIN , int delayrepeat=0)
   };
 };
 
-void ShiftSegDisplay::showFromChar(char charInput[charInputLength] , int delayrepeat=0)
+void ShiftSegDisplay::showFromChar(char charInput[charInputLength] , int delayrepeat)
 {
   //charInput = "-.8.5.1.:'";//SDSDSDSD {L1L2} L3
   // { |.|*|:}
@@ -153,43 +153,43 @@ void ShiftSegDisplay::showFromChar(char charInput[charInputLength] , int delayre
   bool set_L1 = (charInput[8]==modeL1L2[2])|(charInput[8]==modeL1L2[3]);//TrueHIGH , FalseLOW
   bool set_L2 = (charInput[8]==modeL1L2[1])|(charInput[8]==modeL1L2[3]);//TrueHIGH , FalseLOW
   bool set_L3 = (charInput[9]==modeL3[1]);//TrueHIGH , FalseLOW  //Used for temperature
-  std::byte set_DP_POS = std::byte{0b0000};
-  bitWrite(set_DP_POS, 3 , (charInput[1]==modeDec[1]));
-  bitWrite(set_DP_POS, 2 , (charInput[3]==modeDec[1]));
-  bitWrite(set_DP_POS, 1 , (charInput[5]==modeDec[1]));
-  bitWrite(set_DP_POS, 0 , (charInput[7]==modeDec[1]));
-  std::byte numb[4] = {std::byte{0}, std::byte{0}, std::byte{0}, std::byte{0}};
+  __uint8_t set_DP_POS = __uint8_t{0b0000};
+  bit_Write(set_DP_POS, 3 , (charInput[1]==modeDec[1]));
+  bit_Write(set_DP_POS, 2 , (charInput[3]==modeDec[1]));
+  bit_Write(set_DP_POS, 1 , (charInput[5]==modeDec[1]));
+  bit_Write(set_DP_POS, 0 , (charInput[7]==modeDec[1]));
+  __uint8_t numb[4] = {__uint8_t{0}, __uint8_t{0}, __uint8_t{0}, __uint8_t{0}};
   for (u_int32_t i=0; i<=sizeof(modeSeg)-1; i++)
   {
     if (charInput[0]==modeSeg[i])
     {
-      numb[0] = (std::byte)i;
+      numb[0] = (__uint8_t)i;
     };
     if (charInput[2]==modeSeg[i])
     {
-      numb[1] = (std::byte)i;
+      numb[1] = (__uint8_t)i;
     };
     if (charInput[4]==modeSeg[i])
     {
-      numb[2] = (std::byte)i;
+      numb[2] = (__uint8_t)i;
     };
     if (charInput[6]==modeSeg[i])
     {
-      numb[3] = (std::byte)i;
+      numb[3] = (__uint8_t)i;
     };
   };
   
-  std::byte set_extraPins = std::byte{0b000};//LOW,LOW,LOW
+  __uint8_t set_extraPins = __uint8_t{0b000};//LOW,LOW,LOW
   for (int i = 0; i <= delayrepeat; i++)
   {
     masterSetDisplay(numb, set_DP, set_DP_POS, set_L1, set_L2, set_L3, set_extraPins);
   };
 };
 
-void ShiftSegDisplay::masterSetDisplay(std::byte inputDigits[4], bool set_DP_, std::byte set_DP_POS_, bool set_L1_, bool set_L2_, bool set_L3_, std::byte extraOutPutPins)
+void ShiftSegDisplay::masterSetDisplay(__uint8_t inputDigits[4], bool set_DP_, __uint8_t set_DP_POS_, bool set_L1_, bool set_L2_, bool set_L3_, __uint8_t extraOutPutPins)
 {
-  std::byte shiftByte0 = std::byte{0b00000000};// //Used 0bCCACACAC
-  std::byte shiftByte1 = std::byte{0b00000000};// //Used 0bAAAAANNN
+  __uint8_t shiftByte0 = __uint8_t{0b00000000};// //Used 0bCCACACAC
+  __uint8_t shiftByte1 = __uint8_t{0b00000000};// //Used 0bAAAAANNN
   u_int8_t cSelect = u_int8_t{0b00000000};//|1|2|L1L2L3|3|4|  //Used 11111NNN
   //TrueHIGH , FalseLOW
   bool set_DP = set_DP_;
@@ -211,7 +211,7 @@ void ShiftSegDisplay::masterSetDisplay(std::byte inputDigits[4], bool set_DP_, s
   numb[2] = (u_int8_t)inputDigits[2];
   numb[3] = (u_int8_t)inputDigits[3];
   //DP
-  bool statDP[4] = {!bitRead(set_DP_POS, 3-(0)), !bitRead(set_DP_POS, 3-(1)), !bitRead(set_DP_POS, 3-(2)), !bitRead(set_DP_POS, 3-(3))};
+  bool statDP[4] = {!bit_Read(set_DP_POS, 3-(0)), !bit_Read(set_DP_POS, 3-(1)), !bit_Read(set_DP_POS, 3-(2)), !bit_Read(set_DP_POS, 3-(3))};
   if (set_L1|set_L2|set_L3){
     showL1L2L3Display(set_L1, set_L2, set_L3);
   };
@@ -221,37 +221,56 @@ void ShiftSegDisplay::masterSetDisplay(std::byte inputDigits[4], bool set_DP_, s
     //CD1|CD2|AD|CDL1L2L3|AE|CD3|ADP|CD4|  |NOC|NOP|AF|NOP|ACL3|AAL1|AG|ABL2|
     //|00101010|--1-1111|
     //|shiftByte0|shiftByte1|
-    shiftByte0 = std::byte{0b00000000};// //Used 0bCCACACAC
-    shiftByte1 = std::byte{0b00000000};// //Used 0bAAAAANNN
-    bitWrite(shiftByte1, 7-(2), bitRead(setByteNumber,7-(0)));//A L1
-    bitWrite(shiftByte1, 7-(4), bitRead(setByteNumber,7-(1)));//B L2
-    bitWrite(shiftByte1, 7-(1), bitRead(setByteNumber,7-(2)));//C L3
-    bitWrite(shiftByte0, 7-(2), bitRead(setByteNumber,7-(3)));//D
-    bitWrite(shiftByte0, 7-(4), bitRead(setByteNumber,7-(4)));//E
-    bitWrite(shiftByte1, 7-(0), bitRead(setByteNumber,7-(5)));//F
-    bitWrite(shiftByte1, 7-(3), bitRead(setByteNumber,7-(6)));//G
-    bitWrite(shiftByte0, 7-(6), (!statDP[i] and set_DP));//DP
+    shiftByte0 = __uint8_t{0b00000000};// //Used 0bCCACACAC
+    shiftByte1 = __uint8_t{0b00000000};// //Used 0bAAAAANNN
+    bit_Write
+(shiftByte1, 7-(2), bit_Read(setByteNumber,7-(0)));//A L1
+    bit_Write
+(shiftByte1, 7-(4), bit_Read(setByteNumber,7-(1)));//B L2
+    bit_Write
+(shiftByte1, 7-(1), bit_Read(setByteNumber,7-(2)));//C L3
+    bit_Write
+(shiftByte0, 7-(2), bit_Read(setByteNumber,7-(3)));//D
+    bit_Write
+(shiftByte0, 7-(4), bit_Read(setByteNumber,7-(4)));//E
+    bit_Write
+(shiftByte1, 7-(0), bit_Read(setByteNumber,7-(5)));//F
+    bit_Write
+(shiftByte1, 7-(3), bit_Read(setByteNumber,7-(6)));//G
+    bit_Write
+(shiftByte0, 7-(6), (!statDP[i] and set_DP));//DP
     
     delaymul = 0;
-    bitWrite(cSelect, 7-(2), HIGH);
-    if ((numb[0] == numb[i]) and (statDP[0] == statDP[i])) {bitWrite(cSelect, 7-(0), LOW);delaymul += 1;} else {bitWrite(cSelect, 7-(0), HIGH);};
-    if ((numb[1] == numb[i]) and (statDP[1] == statDP[i])) {bitWrite(cSelect, 7-(1), LOW);delaymul += 1;} else {bitWrite(cSelect, 7-(1), HIGH);};
-    bitWrite(cSelect, 7-(2), HIGH);
-    if ((numb[2] == numb[i]) and (statDP[2] == statDP[i])) {bitWrite(cSelect, 7-(3), LOW);delaymul += 1;} else {bitWrite(cSelect, 7-(3), HIGH);};
-    if ((numb[3] == numb[i]) and (statDP[3] == statDP[i])) {bitWrite(cSelect, 7-(4), LOW);delaymul += 1;} else {bitWrite(cSelect, 7-(4), HIGH);};
+    bit_Write
+(cSelect, 7-(2), HIGH);
+    if ((numb[0] == numb[i]) and (statDP[0] == statDP[i])) {bit_Write
+(cSelect, 7-(0), LOW);delaymul += 1;} else {bit_Write
+(cSelect, 7-(0), HIGH);};
+    if ((numb[1] == numb[i]) and (statDP[1] == statDP[i])) {bit_Write
+(cSelect, 7-(1), LOW);delaymul += 1;} else {bit_Write
+(cSelect, 7-(1), HIGH);};
+    bit_Write
+(cSelect, 7-(2), HIGH);
+    if ((numb[2] == numb[i]) and (statDP[2] == statDP[i])) {bit_Write
+(cSelect, 7-(3), LOW);delaymul += 1;} else {bit_Write
+(cSelect, 7-(3), HIGH);};
+    if ((numb[3] == numb[i]) and (statDP[3] == statDP[i])) {bit_Write
+(cSelect, 7-(4), LOW);delaymul += 1;} else {bit_Write
+(cSelect, 7-(4), HIGH);};
     
-    bitWrite(shiftByte0, 7-(0), bitRead(cSelect,7-(0)));//CD1 //keep LOW if CDL1L2L3 is HIGH
-    bitWrite(shiftByte0, 7-(1), bitRead(cSelect,7-(1)));//CD2 //keep LOW if CDL1L2L3 is HIGH
-    bitWrite(shiftByte0, 7-(3), bitRead(cSelect,7-(2)));//CDL1L2L3 //keep LOW if CD1|CD2|CD3|CD4 are HIGH
-    bitWrite(shiftByte0, 7-(5), bitRead(cSelect,7-(3)));//CD3 //keep LOW if CDL1L2L3 is HIGH
-    bitWrite(shiftByte0, 7-(7), bitRead(cSelect,7-(4)));//CD4 //keep LOW if CDL1L2L3 is HIGH
+    bit_Write
+(shiftByte0, 7-(0), bit_Read(cSelect,7-(0)));//CD1 //keep LOW if CDL1L2L3 is HIGH
+    bit_Write
+(shiftByte0, 7-(1), bit_Read(cSelect,7-(1)));//CD2 //keep LOW if CDL1L2L3 is HIGH
+    bit_Write
+(shiftByte0, 7-(3), bit_Read(cSelect,7-(2)));//CDL1L2L3 //keep LOW if CD1|CD2|CD3|CD4 are HIGH
+    bit_Write
+(shiftByte0, 7-(5), bit_Read(cSelect,7-(3)));//CD3 //keep LOW if CDL1L2L3 is HIGH
+    bit_Write
+(shiftByte0, 7-(7), bit_Read(cSelect,7-(4)));//CD4 //keep LOW if CDL1L2L3 is HIGH
     
     writeShift2x(latchPin, dataPin, clockPin, shiftByte0, shiftByte1|extraOutPutPins);
     delay(4 / delaymul);
     //setLastByteNumber = setByteNumber;
   };
 };
-
-
-
-

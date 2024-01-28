@@ -1,9 +1,9 @@
 //By Darrien Varrette
-//BetterShiftRegisterControl.h
+//BetterShiftRegControl.h
 
 
-#ifndef BetterShiftRegisterControl_h
-#define BetterShiftRegisterControl_h
+#ifndef BetterShiftRegControl_h
+#define BetterShiftRegControl_h
 
 //please refer to "~/Data sheets and References Images/74hc595_function.jpg"
 //used to set what pins are connected when class is defined
@@ -25,6 +25,7 @@
 
 #include <sstream>
 
+/*
 std::string int8_to_binstr(__uint8_t value)
 {
   std::string output = "00000000";
@@ -40,16 +41,18 @@ std::string int8_to_binstr(__uint8_t value)
   }
   return output;
 }
-
+//*/
 
 union Data {
-  std::byte b[2];
+  __uint8_t b[2];
   int value;
 };
 
-enum BoolPinState {LOW = false, HIGH = true};
+//enum BoolPinState {LOW = false, HIGH = true};
+#define LOW false
+#define HIGH true
 //enum PinModeOptions {OUTPUT, INPUT, INPUT_PULLUP};
-enum ShiftOrder {LSBFIRST, MSBFIRST};
+enum ShiftOrder {LSB_FIRST, MSB_FIRST};
 enum PinNames_of_74HC595 {
   Data_74HC595,
   Clock_74HC595,
@@ -59,7 +62,7 @@ enum PinNames_of_74HC595 {
 };
 
 
-class BetterShiftRegisterControl
+class BetterShiftRegControl
 {
   protected:
   private:
@@ -108,8 +111,8 @@ class BetterShiftRegisterControl
   public:
     /*
     */
-    BetterShiftRegisterControl(__uint16_t register_init_count, __uint8_t connected_Pins_mask);
-    ~BetterShiftRegisterControl()
+    BetterShiftRegControl(__uint16_t register_init_count, __uint8_t connected_Pins_mask);
+    ~BetterShiftRegControl()
     {
       free(this->_registerPinState);
       this->_registerPinState = NULL;
