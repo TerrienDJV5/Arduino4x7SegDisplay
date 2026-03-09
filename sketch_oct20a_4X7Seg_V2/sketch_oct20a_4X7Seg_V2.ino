@@ -7,6 +7,8 @@
 #include "ShiftSegDisplayV2.h"
 
 
+// i shoud now clean up all the dirt!
+
 void ShiftSegDisplay::digitalPinWrite(__uint8_t selectPin, bool newState){
   //put arduino digitalWrite Here
   digitalWrite(selectPin, newState);
