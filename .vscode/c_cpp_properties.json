@@ -3,7 +3,6 @@
     "configurations": [
         {
             "name": "Linux",
-            "compilerPath": "/usr/bin/gcc",
             "compilerArgs": [],
             "intelliSenseMode": "linux-clang-x64",
             "includePath": [
@@ -13,7 +12,8 @@
             "forcedInclude": [],
             "cStandard": "c17",
             "cppStandard": "c++17",
-            "defines": []
+            "defines": [],
+            "compilerPath": "/usr/bin/gcc"
         },
         {
             "name": "Arduino",
