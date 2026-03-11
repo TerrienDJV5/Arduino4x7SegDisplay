@@ -48,5 +48,6 @@
         "typeinfo": "cpp",
         "variant": "cpp",
         "iostream": "cpp"
-    }
+    },
+    "idf.currentSetup": "/home/hacktopubuntu/esp/esp-idf"
 }
